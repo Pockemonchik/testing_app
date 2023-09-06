@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import include, re_path
 from auth import urls as auth_urls
-from manga import urls as manga_urls
+from testing import urls as testing_urls
 from django.conf import settings
 from django.conf.urls.static import static
 from drf_yasg.views import get_schema_view
@@ -30,7 +30,7 @@ urlpatterns = [
     re_path(r'^swagger/$', schema_view.with_ui('swagger',
             cache_timeout=0), name='schema-swagger-ui'),
     re_path('api-auth/', include('rest_framework.urls')),
-    re_path(r'^api/manga/', include(manga_urls)),
+    re_path(r'^api/testing/', include(testing_urls)),
     re_path(r'^api/auth/', include(auth_urls)),
 ]
 if settings.DEBUG:

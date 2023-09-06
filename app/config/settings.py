@@ -39,8 +39,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'django_celery_results',
     'django_celery_beat',
-    'applogger',
-    'manga',
+    'testing',
 ]
 
 RMQ_IP=os.environ.get("DEBUG", "192.168.1.101")
@@ -114,13 +113,6 @@ LOGGING = {
             'filename': 'log.log',
             'formatter': 'errorformatter'
         },
-        'db': {
-            'level': 'INFO',
-            "class": "applogger.handlers.DBHandler",
-            "model": "applogger.models.LogEntry",
-            "expiry": 86400,
-            "formatter": "only_message",
-        },
     },
     'loggers': {
         'jobs': {
@@ -130,7 +122,7 @@ LOGGING = {
 
         },
         'core': {
-            'handlers': ['file', 'db'],
+            'handlers': ['file',],
             'level': 'INFO',
             'propagate': True,
         },

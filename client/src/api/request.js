@@ -1,7 +1,7 @@
 import axios from "axios"
-// const baseUrl = "http://localhost:8000/api/"
+const baseUrl = "http://localhost:8000/api/"
 const token = "token"
-const baseUrl = process.env.REACT_APP_API_URL
+// const baseUrl = process.env.REACT_APP_API_URL
 console.log("baseUrl",baseUrl)
 const client = axios.create({
     baseURL: baseUrl,

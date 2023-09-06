@@ -1,7 +1,7 @@
 <template>
   <div class="bg">
     <div class="authBox">
-      <div class="card">
+      <div class="auth-card ">
         <a-divider>Авторизация</a-divider>
         <div className="form">
           <a-form
@@ -12,8 +12,8 @@
             @finishFailed="onFinishFailed"
           >
             <a-form-item
-            :label-col="{ span: 8 }"
-            :wrapper-col="{ span: 14 }"
+              :label-col="{ span: 8 }"
+              :wrapper-col="{ span: 14 }"
               label="Логин"
               name="username"
               :rules="[
@@ -31,7 +31,7 @@
               label="Пароль"
               name="password"
               :label-col="{ span: 8 }"
-            :wrapper-col="{ span: 14 }"
+              :wrapper-col="{ span: 14 }"
               :rules="[
                 { required: true, message: 'Please input your password!' },
               ]"
@@ -43,8 +43,12 @@
               </a-input-password>
             </a-form-item>
             <a-form-item>
-              
-              <a-button type="primary" html-type="submit" class="login-form-button">Войти</a-button>
+              <a-button
+                type="primary"
+                html-type="submit"
+                class="login-form-button"
+                >Войти</a-button
+              >
               <a-divider></a-divider>
               <a href="">Регистрация</a>
             </a-form-item>
@@ -66,8 +70,10 @@ export default {
     },
   }),
   methods: {
-    onFinish(values) {
-      console.log("Success:", values);
+    async onFinish(values) {
+      console.log("Success:", values, this.$store.state);
+      await this.$store.dispatch("auth", values);
+      console.log("Success:", values, this.$store.state);
     },
     onFinishFailed(errorInfo) {
       console.log("Failed:", errorInfo);
@@ -91,7 +97,7 @@ export default {
   height: 100vh;
 }
 
-.card {
+.auth-card {
   width: 330px;
   background-color: #ffffff;
   border-radius: 5px;

@@ -1,5 +1,5 @@
 version: '3.9'
-name: manga-dev
+name: testing-dev
 services:
   api:
     build: ./app
@@ -16,32 +16,6 @@ services:
       - db_dev
     restart: on-failure
   
-  redis:
-    image: 'redis:alpine' 
-    hostname: redis
-
-  celery:
-      build: ./app
-      command: "celery -A config worker -l INFO -E"
-      depends_on:
-        - db_dev
-      restart: on-failure
-      env_file: 
-        - ./.env.dev
-      volumes:
-      - ./app/:/usr/src/app/
-
-  celery-beat:
-      build: ./app
-      command: "celery -A config beat -l INFO"
-      depends_on:
-        - db_dev
-      restart: on-failure
-      volumes:
-        - ./app/:/usr/src/app/
-      env_file: 
-        - ./.env.dev
-
   db_dev:
     image: postgres:13.0-alpine
     volumes:
