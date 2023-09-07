@@ -1,37 +1,27 @@
 from rest_framework import serializers
 from .models import *
 from datetime import datetime, date
-from django_celery_results.models import TaskResult
 
-
-class SourceSerializer(serializers.ModelSerializer):
+class AnswerSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Source
+        model = Answer
+        fields = ('id','description','correct')
 
-class MangaSerializer(serializers.ModelSerializer):
+class QuestionSerializer(serializers.ModelSerializer):
+    answers = AnswerSerializer(many=True)
     class Meta:
-        model = Manga
-        exclude = ['active']
-
-class MangaQuerySerializer(serializers.Serializer):
-    name = serializers.CharField(required=False,help_text="имя записи")
-    status = serializers.CharField(required=False,help_text="статус")
-    description = serializers.CharField(required=False,help_text="описание")
-    start_date = serializers.CharField(required=False,help_text="Дата начало периодa (10.10.2023)")
-    end_date = serializers.CharField(required=False,help_text="Дата начало периодa (10.10.2023)")
+        model = Question
+        fields = ('id','description','answers')
 
 
-class PutSerializer(serializers.ModelSerializer):
+class TestSerializer(serializers.ModelSerializer):
+    questions = QuestionSerializer(many=True)
     class Meta:
-        model = Manga
-        fields = ['id','name',]
+        model = Test
+        fields = ('id', 'theme','description','questions')
 
-class MangaListSerializer(serializers.ModelSerializer):
+class TestListSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Manga
-        fields = ['name', 'id','description','time']
-
-
-
-
+        model = Test
+        fields = ('id', 'theme',)
 

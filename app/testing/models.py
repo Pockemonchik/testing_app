@@ -4,7 +4,7 @@ from django.contrib.postgres.fields import ArrayField
 
 
 class Test(models.Model):
-    """Класс для обьекта теста"""
+    """Модель теста"""
     theme = models.CharField(max_length=50, null=True,
                              blank=True, verbose_name="Тема теста")
     description = models.TextField(
@@ -26,7 +26,7 @@ class Test(models.Model):
 
 
 class Question(models.Model):
-    """Класс для впоросов к тесту"""
+    """Модель впоросов к тесту"""
     test = models.ForeignKey(
         Test, related_name="questions", on_delete=models.CASCADE, verbose_name="Связанный тест")
     description = models.TextField(
@@ -47,9 +47,9 @@ class Question(models.Model):
             return str(self.id)
 
 
-class Answers(models.Model):
-    """Класс для ответов на вопрос из теста"""
-    question = models.ForeignKey(Question, related_name="anwers",
+class Answer(models.Model):
+    """Модель ответов на вопрос из теста"""
+    question = models.ForeignKey(Question, related_name="answers",
                                  on_delete=models.CASCADE, verbose_name="Связанный вопрос")
     description = models.TextField(
         null=True, blank=True, verbose_name="Описание ответа")

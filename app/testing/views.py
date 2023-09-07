@@ -1,100 +1,78 @@
-# from rest_framework.response import Response
-# from rest_framework.pagination import LimitOffsetPagination
-# from rest_framework import status
-# from drf_yasg.utils import swagger_auto_schema
-# from .serializers import *
-# from config.settings import *
-# from .models import *
-# from config.settings import *
-# from core.views import BaseView
-# from rest_framework.parsers import MultiPartParser
-# from .services import *
-# from .tasks import *
-# from services import Remanga
+from rest_framework.response import Response
+from drf_yasg.utils import swagger_auto_schema
+from .serializers import *
+from config.settings import *
+from .models import *
+from config.settings import *
+from core.views import BaseView
+from .services import *
+from django.db.models import Prefetch
+from rest_framework.parsers import JSONParser
 
 
-# class MangaListView(BaseView, LimitOffsetPagination):
-#     """Список мангей или создание манги"""
+class TestListView(BaseView):
+    """Возвращает список тестов"""
 
-#     parser_classes = (MultiPartParser,)
-
-#     @swagger_auto_schema(responses={200: MangaSerializer}, query_serializer=MangaQuerySerializer)
-#     def get(self, request,source_name):
-#         """Возвращает несколько манг в зависимости от параметров"""
-#         # проверяем валидность источника
-#         if not Source.objects.filter(source_name=source_name):
-#             return Response({'error': "Bad source of manga name in url"}, status=status.HTTP_400_BAD_REQUEST)
-#         remanga = Remanga()
-#         print(remanga.get_daily_top_titles())
-#         queryset = Manga.objects.all()
-#         paginate_queryset = self.paginate_queryset(queryset, request, view=self)
-#         serializer = MangaListSerializer(
-#             instance=paginate_queryset, many=True)
-#         return self.get_paginated_response(serializer.data)
-
-#     @swagger_auto_schema(responses={200: MangaSerializer}, request_body=MangaSerializer)
-#     def post(self, request):
-#         """Создание манги"""
-#         serializer = MangaSerializer(data=request.data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-#         else:
-#             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    @swagger_auto_schema(responses={200: TestListSerializer})
+    def get(self, request, source_name):
+        """Возвращает список тестов"""
+        queryset = Test.objects.all()
+        serializer = TestListSerializer(
+            instance=queryset, many=True)
+        return Response(serializer.data)
 
 
-# class MangaDetailView(BaseView):
-#     """Получение, удаление, обновление конкретной манги"""
+class TestDetailView(BaseView):
+    """Возвращает конкретный конкретный тест с вопросами и ответами"""
 
-#     @swagger_auto_schema(responses={200: MangaSerializer})
-#     def get(self, request, pk):
-#         """Возвращает конкретную мангу"""
-#         queryset = Manga.objects.get(id=pk)
-#         serializer = MangaSerializer(
-#             instance=queryset)
-#         return Response(serializer.data)
-
-#     @swagger_auto_schema(responses={200: PutSerializer}, request_body=PutSerializer)
-#     def put(self, request, pk):
-#         """Полное изменение манги"""
-#         record = Manga.objects.get(id=pk)
-#         serializer = PutSerializer(
-#             record, data=request.data, partial=True)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data, status=status.HTTP_200_OK)
-#         else:
-#             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-#     def patch(self, request):
-#         """Изменение парметров манги"""
-
-#         return Response()
-
-#     @swagger_auto_schema(responses={200: MangaSerializer})
-#     def delete(self, request, pk):
-#         """Удалениие манги из базы"""
-#         try:
-#             record = Manga.objects.get(id=pk)
-#             record.active = False
-#             record.save()
-#             return Response("delete "+str(pk), status=status.HTTP_200_OK)
-#         except:
-#             return Response(" cant delete "+str(pk), status=status.HTTP_400_BAD_REQUEST)
+    @swagger_auto_schema(responses={200: TestSerializer})
+    def get(self, request, pk):
+        """Возвращает конкретный конкретный тест с вопросами и ответами"""
+        queryset = Test.objects.get(id=pk)
+        serializer = TestSerializer(
+            instance=queryset)
+        return Response(serializer.data)
 
 
-# class SourceListView(BaseView, LimitOffsetPagination):
-#     """Список источников с мангой"""
+class TestResultView(BaseView):
+    """Возвращает результат пройденного теста"""
+    parser_classes = (JSONParser,)
 
-#     parser_classes = (MultiPartParser,)
+    @swagger_auto_schema(request_body=TestSerializer)
+    def post(self, request):
+        """Принимает id вопроса, список отмеченных ответов, возвращает количество и % правильных ответов"""
+        """
+       {
+            "questions": [{
+                    "id": 1,
+                    "answers": [1, 2]
+                },
+                {
+                    "id": 2,
+                    "answers": [3, 5]
+                }
+            ]
+        }
+        
+        """
+        question_id_list = list(
+            map(lambda x: x['id'], request.data['questions']))
+        print("question_id_list", question_id_list)
 
-#     @swagger_auto_schema(responses={200: MangaSerializer}, query_serializer=MangaQuerySerializer)
-#     def get(self, request,source):
-#         """Возвращает список источников манги"""
-#         print(source)
-#         queryset =Source.objects.all()
-#         paginate_queryset = self.paginate_queryset(queryset, request, view=self)
-#         serializer = SourceSerializer(
-#             instance=paginate_queryset, many=True)
-#         return self.get_paginated_response(serializer.data)
+        queryset = Question.objects.filter(id__in=question_id_list)\
+            .prefetch_related(Prefetch('answers', queryset=Answer.objects.filter(correct=True)))
+        questions = []
+        for question in queryset:
+            answer_id_list = [answer.id for answer in question.answers.all()]
+            questions.append(
+                {'id': question.id, 'answers': set(answer_id_list)})
 
+        correct_count = 0
+        for question in questions:
+            compare_question = list(filter(lambda x: x['id'] == question['id']\
+                                            and set(x['answers']) == question['answers'],
+                                           request.data['questions']))
+            if compare_question:
+                correct_count+=1
+        correct_persent = int((correct_count/len(questions))*100)
+        return Response({'correct_count':correct_count,'correct_persent':correct_persent})

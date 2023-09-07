@@ -18,8 +18,6 @@ class BaseView(APIView):
 
     def initial(self, request, *args, **kwargs):
         """Добавляем лог для конкретных действий"""
-        print(str(request.data))
-        print(str(request.query_params))
         message = {
             "user": str(request.user),
             "url": str(request.META['PATH_INFO']),

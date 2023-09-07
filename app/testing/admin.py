@@ -4,7 +4,7 @@ from nested_inline.admin import NestedStackedInline, NestedModelAdmin
 from .models import *
 
 class AnswersInline(NestedStackedInline):
-    model = Answers
+    model = Answer
     extra = 3
     fk_name = 'question'
 
@@ -24,6 +24,6 @@ class TestingAdmin(NestedModelAdmin):
 
 admin.site.register(Test, TestingAdmin)
 admin.site.register(Question)
-admin.site.register(Answers)
+admin.site.register(Answer)
 
 # Register your models here.

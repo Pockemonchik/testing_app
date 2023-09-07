@@ -26,11 +26,9 @@ class AuthView(ObtainAuthToken):
         serializer.is_valid(raise_exception=True)
         req_user = serializer.validated_data['username']
         req_pass = serializer.validated_data['password']
-
         # если пользователь есть в базе то проверяем пароль и выдаем токен
         user = User.objects.filter(
             username=req_user).first()
-
         if user:
             auth = authenticate(username=req_user, password=req_pass)
             if auth is not None:
