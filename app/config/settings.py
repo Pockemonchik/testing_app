@@ -37,9 +37,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
-    'django_celery_results',
-    'django_celery_beat',
     'testing',
+    'nested_inline',
 ]
 
 RMQ_IP=os.environ.get("DEBUG", "192.168.1.101")
@@ -153,7 +152,7 @@ GRANT ALL ON schema public TO django;
 DATABASES = {
     "default": {
         "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.postgresql_psycopg2"),
-        "NAME": os.environ.get("SQL_DATABASE", "summary"),
+        "NAME": os.environ.get("SQL_DATABASE", "app"),
         "USER": os.environ.get("SQL_USER", "django"),
         "PASSWORD": os.environ.get("SQL_PASSWORD", "django"),
         "HOST": os.environ.get("SQL_HOST", "localhost"),
