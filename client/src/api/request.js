@@ -1,6 +1,6 @@
 import axios from "axios"
 const baseUrl = "http://localhost:8000/api/"
-const token = "token"
+const token = 
 // const baseUrl = process.env.REACT_APP_API_URL
 console.log("baseUrl",baseUrl)
 const client = axios.create({
@@ -30,7 +30,7 @@ const onError = (error) => {
 const request = {
     async get(url, params) {
         return client({ method: "get", url: url, params: params, headers: {
-            'Authorization': 'Token ' + token || " "
+            'Authorization': 'Token ' + localStorage.getItem('token') || " "
         }, })
             .then(onSuccess)
             .catch(onError);
@@ -38,7 +38,7 @@ const request = {
     async getFile(url, params) {
         return client({
             method: "get", url: url, params: params, responseType: 'blob', headers: {
-                'Authorization': 'Token ' + token || " "
+                'Authorization': 'Token ' + localStorage.getItem('token') || " "
             },
         })
             .then(onSuccess)
@@ -48,7 +48,7 @@ const request = {
         return client({
             method: "post", url: url, data: params, headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Token ' + token || " "
+                'Authorization': 'Token ' + localStorage.getItem('token') || " "
             },
         })
             .then(onSuccess)
@@ -58,7 +58,7 @@ const request = {
         return client({
             method: "put", url: url, data: params, headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Token ' + token || " "
+                'Authorization': 'Token ' + localStorage.getItem('token') || " "
             },
         })
             .then(onSuccess)
@@ -68,7 +68,7 @@ const request = {
         return client({
             method: "patch", url: url, data: params, headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Token ' + token || " "
+                'Authorization': 'Token ' + localStorage.getItem('token') || " "
             },
         })
             .then(onSuccess)

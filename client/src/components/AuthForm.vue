@@ -33,7 +33,7 @@
               :label-col="{ span: 8 }"
               :wrapper-col="{ span: 14 }"
               :rules="[
-                { required: true, message: 'Please input your password!' },
+                { required: true, message: 'Введите пароль!' },
               ]"
             >
               <a-input-password v-model:value="formState.password">
@@ -50,7 +50,7 @@
                 >Войти</a-button
               >
               <a-divider></a-divider>
-              <a href="">Регистрация</a>
+              <router-link  to="/registration">Регистрация</router-link>
             </a-form-item>
           </a-form>
         </div>
@@ -74,6 +74,7 @@ export default {
       console.log("Success:", values, this.$store.state);
       await this.$store.dispatch("auth", values);
       console.log("Success:", values, this.$store.state);
+      await this.$router.push({path: 'testing'})
     },
     onFinishFailed(errorInfo) {
       console.log("Failed:", errorInfo);

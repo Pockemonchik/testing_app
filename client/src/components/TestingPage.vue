@@ -1,4 +1,5 @@
 <template>
+   <a-button v-on:click="logout">Выход</a-button>
   <div class="container">
     <a-row>
     <a-col :span="10"> <TestingList /></a-col>
@@ -16,7 +17,15 @@ export default {
   components: {TestingList,QuestionCard},
   props: {},
   data: () => ({}),
-  methods: {},
+  methods: {
+    logout() {
+      console.log("logout");
+      this.$store.dispatch("logout");
+      this.$router.push({ 
+        path: 'auth',
+    });
+    },
+  },
 };
 </script>
   

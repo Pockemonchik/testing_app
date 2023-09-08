@@ -1,23 +1,25 @@
 <template>
-    <a-list
-      item-layout="horizontal"
-      :data-source="tests"
-      :pagination="pagination"
-    >
-      <template #renderItem="{ item }">
-        <a-list-item>
-          <template #actions>
-            <a key="list-loadmore-edit">Начать тест</a>
+  <a-list
+    item-layout="horizontal"
+    :data-source="tests"
+    :pagination="pagination"
+  >
+    <template #renderItem="{ item }">
+      <a-list-item>
+        <template #actions>
+          <a key="list-loadmore-edit" v-on:click="onClickTest(item.id)"
+            >Начать тест</a
+          >
+        </template>
+        <a-list-item-meta>
+          <template #title>
+            <a href="">{{ item.theme }}</a>
           </template>
-          <a-list-item-meta>
-            <template #title>
-              <a href="https://www.antdv.com/">{{ item.name }}</a>
-            </template>
-          </a-list-item-meta>
-          <div>{{item.description}}</div>
-        </a-list-item>
-      </template>
-    </a-list>
+        </a-list-item-meta>
+        <div>{{ item.id }}</div>
+      </a-list-item>
+    </template>
+  </a-list>
 </template>
   
   <script>
@@ -28,32 +30,24 @@ export default {
     pagination: {
       pageSize: 8,
     },
-    tests: [
-      { name: "222123", description: "qwe123123" },
-      { name: "123", description: "qwe" },
-      { name: "222123", description: "qwe123123" },
-      { name: "123", description: "qwe" },
-      { name: "222123", description: "qwe123123" },
-      { name: "123", description: "qwe" },
-      { name: "222123", description: "qwe123123" },
-      { name: "123", description: "qwe" },
-      { name: "222123", description: "qwe123123" },
-      { name: "123", description: "qwe" },
-      { name: "222123", description: "qwe123123" },
-      { name: "123", description: "qwe" },
-    ],
+    tests: [],
   }),
 
   methods: {
-    onClickTest(values) {
-      console.log("Success:", values, this.$store.state);
-      //   await this.$store.dispatch("auth", values);;
+    async onClickTest(id) {
+      console.log("onClickTest");
+      await this.$store.dispatch("getTest", id );
+    },
+    async setListData() {
+      await this.$store.dispatch("getTestList");
+      this.tests = this.$store.state.tests;
     },
   },
 
-  //   mounted(): ,
+  mounted() {
+    this.setListData();
+  },
 };
 </script>
   <style >
-
 </style>

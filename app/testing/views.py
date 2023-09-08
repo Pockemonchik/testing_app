@@ -14,7 +14,7 @@ class TestListView(BaseView):
     """Возвращает список тестов"""
 
     @swagger_auto_schema(responses={200: TestListSerializer})
-    def get(self, request, source_name):
+    def get(self, request):
         """Возвращает список тестов"""
         queryset = Test.objects.all()
         serializer = TestListSerializer(

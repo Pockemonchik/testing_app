@@ -1,13 +1,13 @@
 <template>
-  <a-card :title="question.description">
+  <a-card :title="currentQuestion.description">
     <template #extra><a href="#">1/12</a></template>
     <template #actions>
-      <a-button>Отправить</a-button>
+      <a-button v-on:click="onClickNext">Далее</a-button>
     </template>
     <a-checkbox-group v-model:value="value" style="width: 100%">
       <a-row>
-        <a-col v-for="item of question.answers" :key="item" :span="8">
-          <a-checkbox value="A">{{item}}</a-checkbox>
+        <a-col v-for="item of currentQuestion.answers" :key="item.id" :span="8">
+          <a-checkbox :value=item.id>{{item.description}}</a-checkbox>
         </a-col>
       </a-row>
     </a-checkbox-group>
@@ -15,23 +15,29 @@
 </template>
   
   <script>
+import { mapGetters } from 'vuex'
 export default {
   name: "QuestionCard",
   props: {},
   data: () => ({
     question: {
-      description: "Вопрос 1",
-      answers: ["1 ответ", "2 ответ", "3 ответ", "4 ответ"],
     },
   }),
-
-  methods: {
-    onClickTest(values) {
-      console.log("Success:", values, this.$store.state);
-      //   await this.$store.dispatch("auth", values);;
-    },
+  computed: {
+    ...mapGetters({
+      currentQuestion: 'getCurrentQuestion'
+    })
   },
-
+  methods: {
+    async onClickNext() {
+      console.log("onClickTest");
+      await this.$store.dispatch("nextQuestion");
+    },
+    // async setListData() {
+    //   await this.$store.dispatch("getTestList");
+    //   this.tests = this.$store.state.tests;
+    // },
+  },
   //   mounted(): ,
 };
 </script>

@@ -61,7 +61,7 @@
                 
                 <a-button type="primary" html-type="submit" class="login-form-button">Зарегистрироваться</a-button>
                 <a-divider></a-divider>
-                <a href="">Авторизация</a>
+                <router-link  to="/auth">Авторизация</router-link>
               </a-form-item>
             </a-form>
           </div>
