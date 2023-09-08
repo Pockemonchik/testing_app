@@ -1,23 +1,23 @@
 version: '3.9'
 name: testing-dev
 services:
-  # client:
-  #     build: 
-  #       context: ./client
-  #       dockerfile: Dockerfile
-  #       args: 
-  #         - API_URL="http://localhost:8000/api/"
-  #     ports:
-  #       - 8080:8080
-  #     volumes:
-  #       - ./client:/app
-  #       - /app/node_modules
-  #     environment:
-  #       - API_URL="http://localhost:8000/api"
-  #       - CHOKIDAR_USEPOLLING=true
-  #     stdin_open: true
-  #     tty: true
-  #     restart: on-failure
+  client:
+      build: 
+        context: ./client
+        dockerfile: Dockerfile
+        args: 
+          - API_URL="http://localhost:8000/api/"
+      ports:
+        - 8080:8080
+      volumes:
+        - ./client:/app
+        - /app/node_modules
+      environment:
+        - API_URL="http://localhost:8000/api"
+        - CHOKIDAR_USEPOLLING=true
+      stdin_open: true
+      tty: true
+      restart: on-failure
 
   api:
     build: ./app
