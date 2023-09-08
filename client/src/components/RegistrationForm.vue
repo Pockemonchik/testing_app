@@ -51,7 +51,7 @@
                   { required: true, message: 'Please input your password!' },
                 ]"
               >
-                <a-input-password v-model:value="formState.password">
+                <a-input-password v-model:value="formState.confirm">
                   <template #prefix>
                     <LockOutlined class="site-form-item-icon" />
                   </template>
@@ -82,8 +82,10 @@
       },
     }),
     methods: {
-      onFinish(values) {
-        console.log("Success:", values);
+      async onFinish(values) {
+        await this.$store.dispatch("registration", values);
+        console.log("Success:", values, this.$store.state);
+        await this.$router.push({path: 'testing'})
       },
       onFinishFailed(errorInfo) {
         console.log("Failed:", errorInfo);

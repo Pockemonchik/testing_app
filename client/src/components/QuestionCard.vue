@@ -1,13 +1,35 @@
 <template>
-  <a-card :title="currentQuestion.description">
-    <template #extra><a href="#">1/12</a></template>
+  <a-card
+    :bordered="false"
+    :title="currentQuestion.description ? currentQuestion.description : ''"
+  >
+    <template #extra
+      ><a href="#"
+        >{{ currentQuestionIndex }} / {{ currentTestLength }}</a
+      ></template
+    >
     <template #actions>
-      <a-button v-on:click="onClickNext">Далее</a-button>
+      <a-button
+        v-if="currentQuestionIndex == currentTestLength"
+        @click="onClickResult"
+        >Результат</a-button
+      >
+      <a-button v-else @click="onClickNext">Далее</a-button>
     </template>
-    <a-checkbox-group v-model:value="value" style="width: 100%">
+    <a-checkbox-group v-model:value="checked" style="width: 100%">
       <a-row>
-        <a-col v-for="item of currentQuestion.answers" :key="item.id" :span="8">
-          <a-checkbox :value=item.id>{{item.description}}</a-checkbox>
+        <a-col
+          v-for="item of currentQuestion.answers"
+          :key="item.id"
+          :span="16"
+        >
+          <a-checkbox
+            @change="onCheckChange"
+            :value="item.id"
+            >{{ item.description }}</a-checkbox
+          >
+          <br />
+          <br />
         </a-col>
       </a-row>
     </a-checkbox-group>
@@ -15,38 +37,61 @@
 </template>
   
   <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
+import { ref } from "vue";
+import { notification } from "ant-design-vue";
 export default {
   name: "QuestionCard",
   props: {},
   data: () => ({
-    question: {
-    },
+    answers: [],
+    checked: ref([]),
   }),
   computed: {
     ...mapGetters({
-      currentQuestion: 'getCurrentQuestion'
-    })
+      currentQuestion: "getCurrentQuestion",
+      currentTestLength: "getCurrentTestLength",
+      currentQuestionIndex: "getCurrentQuestionIndex",
+    }),
   },
   methods: {
     async onClickNext() {
-      console.log("onClickTest");
-      await this.$store.dispatch("nextQuestion");
+      console.log("onClickTest answers", this.answers);
+      if (this.answers.length > 0) {
+        await this.$store.dispatch("nextQuestion", this.answers);
+        this.answers = [];
+        return true;
+      } else {
+        notification["error"]({
+          message: "Выберите один или несколько ответов!",
+        });
+        return false;
+      }
     },
-    // async setListData() {
-    //   await this.$store.dispatch("getTestList");
-    //   this.tests = this.$store.state.tests;
-    // },
+    async onClickResult() {
+      let ready = await this.onClickNext();
+      if (ready) {
+        await this.$store.dispatch("getTestResult");
+        notification["success"]({
+          message: "Вы прошли тест!",
+          description:
+            "Правильных ответов: " +
+            this.$store.state.testStats.correct_count +
+            " | " +
+            this.$store.state.testStats.correct_persent +
+            " % !",
+        });
+      }
+    },
+    onCheckChange(e) {
+      e.target.checked
+        ? this.answers.push(e.target.value)
+        : (this.answers = this.answers.filter(
+            (item) => item != e.target.value
+          ));
+    },
   },
-  //   mounted(): ,
 };
 </script>
   <style >
-.card {
-  width: 100%;
-  background-color: #e0e0e3;
-  border-radius: 5px;
-  text-align: left;
-  border: 1px solid #e0e0e3;
-}
 </style>

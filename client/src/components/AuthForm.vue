@@ -72,7 +72,7 @@ export default {
   methods: {
     async onFinish(values) {
       console.log("Success:", values, this.$store.state);
-      await this.$store.dispatch("auth", values);
+      await this.$store.dispatch("login", values);
       console.log("Success:", values, this.$store.state);
       await this.$router.push({path: 'testing'})
     },
@@ -87,7 +87,7 @@ export default {
 .bg {
   color: #f6f7fb;
   background-color: rgba(238, 236, 236, 0.8);
-  height: 100%;
+  height: 100vh;
   width: 100vw;
 }
 
@@ -95,7 +95,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 100vh;
+  height: 100%;
 }
 
 .auth-card {

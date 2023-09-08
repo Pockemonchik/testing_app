@@ -37,4 +37,37 @@ class AuthView(ObtainAuthToken):
                     'token': token.key})
             else:
                 return JsonResponse({'error': "Неверный пароль"}, status=400)
-  
+
+
+class RegistrationView(ObtainAuthToken):
+    """Класс для регистрации пользователя"""
+
+    @swagger_auto_schema(responses={200: UserSerializer}, request_body=UserSerializer)
+    def post(self, request):
+        """Регистраци пользователя"""
+        # проверяем валидность данных
+        print("request.data",request.data)
+        serializer = CreateUserSerializer(data=request.data,
+                                          context={'request': request})
+        print("serializer", serializer.is_valid(raise_exception=True))
+        serializer.is_valid(raise_exception=True)
+        req_user = serializer.validated_data['username']
+        req_pass = serializer.validated_data['password']
+        # если пользователь есть в базе то проверяем пароль и выдаем токен
+        user = User.objects.filter(
+            username=req_user).first()
+        if user:
+            return JsonResponse({'error': "Пользователь с таким логном уже зарегистрирован"}, status=400)
+        User.objects.create_user(
+            username = serializer.validated_data['username'],
+            password= serializer.validated_data['password']
+        )
+        auth = authenticate(username=req_user, password=req_pass)
+        user = User.objects.filter(
+            username=req_user).first()  
+        if auth is not None:
+            token, created = Token.objects.get_or_create(user=user)
+            return Response({
+                'token': token.key})
+        else:
+            return JsonResponse({'error': "Неверный пароль"}, status=400)

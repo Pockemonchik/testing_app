@@ -16,7 +16,7 @@
             <a href="">{{ item.theme }}</a>
           </template>
         </a-list-item-meta>
-        <div>{{ item.id }}</div>
+        <div>{{ item.description }}</div>
       </a-list-item>
     </template>
   </a-list>
@@ -32,7 +32,7 @@ export default {
     },
     tests: [],
   }),
-
+  
   methods: {
     async onClickTest(id) {
       console.log("onClickTest");

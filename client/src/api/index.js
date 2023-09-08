@@ -5,7 +5,7 @@ export const authAPI = {
     async auth(params) {
         console.log("auth start api/", params)
         try {
-            let res = await request.post("/auth/", params)
+            let res = await request.post("/auth/login", params)
             console.log("auth/", res)
             return res
         }
@@ -15,7 +15,7 @@ export const authAPI = {
     },
     async registration(params) {
         console.log("registration start api/", params)
-        let res = await request.post("/registration/", params)
+        let res = await request.post("/auth/registration/", params)
         console.log("registration/", res)
         return res
     }
@@ -35,7 +35,7 @@ export const testingAPI = {
         console.log("test detail api res/", res)
         return res
     },
-    async sendTestResult(params) { 
+    async getTestResult(params) { 
         console.log("test results api/", params)
         let res = await request.post(`testing/results/`, params)
         console.log("test results api res/", res)

@@ -57,8 +57,6 @@ class TestResultView(BaseView):
         """
         question_id_list = list(
             map(lambda x: x['id'], request.data['questions']))
-        print("question_id_list", question_id_list)
-
         queryset = Question.objects.filter(id__in=question_id_list)\
             .prefetch_related(Prefetch('answers', queryset=Answer.objects.filter(correct=True)))
         questions = []
